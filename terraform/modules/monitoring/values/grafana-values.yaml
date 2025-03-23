@@ -1,0 +1,59 @@
+persistence:
+  enabled: true
+  size: 10Gi
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+adminPassword: "admin"  # Change this in production
+
+service:
+  type: ClusterIP
+  port: 80
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server.monitoring.svc.cluster.local
+        access: proxy
+        isDefault: true
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards
+
+dashboards:
+  default:
+    kubernetes-cluster:
+      gnetId: 7249
+      revision: 1
+      datasource: Prometheus
+    kubernetes-pods:
+      gnetId: 6417
+      revision: 1
+      datasource: Prometheus
+    kubernetes-services:
+      gnetId: 6418
+      revision: 1
+      datasource: Prometheus
+    kubernetes-deployments:
+      gnetId: 6419
+      revision: 1
+      datasource: Prometheus 
